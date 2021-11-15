@@ -1,0 +1,67 @@
+package shop.j980108.controller;
+
+
+
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import shop.j980108.domain.BookVo;
+import shop.j980108.domain.Criteria;
+import shop.j980108.domain.PageDTO;
+import shop.j980108.service.BookService;
+
+@Controller
+@Log4j
+@RequestMapping("/book")
+@AllArgsConstructor
+public class BookController {
+	private BookService service;
+	
+	@GetMapping("createbook")
+	public void createbook(){
+		 
+	}
+	
+	@PostMapping("register")
+	@ResponseBody
+	public String register(@RequestBody BookVo bookVo) {
+		log.info(bookVo);
+		service.register(bookVo);
+		return "success";
+	}
+/*	
+	@GetMapping("selectbook")
+	public void selectbook(){
+		 
+	}*/
+	
+   //페이지번호에 따른 게시글 목록 출력
+	@GetMapping("selectbook")
+   //나중에 게시물 목록을 전달해야 하므로 Model을 파라미터로 지정
+   public void selectbook(Model model, Criteria cri){
+      log.info("book.list");
+      //model에 BoardServiceImpl의 결과를 담아 전달
+      model.addAttribute("list", service.getList(cri)); 
+      model.addAttribute("page", new PageDTO(service.getTotal(cri),cri));
+   }
+	
+	//게시글 상세보기
+		@GetMapping("detailbook")
+		public void get(@RequestParam("bno") Long bno, Model model, @ModelAttribute("cri") Criteria cri){
+			log.info("get");
+			model.addAttribute("book",service.get(bno));
+		}
+}

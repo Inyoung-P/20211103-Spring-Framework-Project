@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="shop.j980108.mapper.BoardMapper">
+
+  	  
+  	<!-- 어떤걸로 검색할지 T-title C-content W-id -->
+  	  <sql id="cri">
+           <trim prefix="(" suffix=") AND" prefixOverrides="OR">
+             <foreach collection="typeArr" item="type">
+                <trim prefix="OR">
+                   <choose>
+                      <when test="type == 'T'.toString()">
+                         TITLE LIKE '%'||#{keyword}||'%'
+                      </when>
+                      <when test="type == 'C'.toString()">
+                         CONTENT LIKE '%${keyword}%'
+                      </when>
+                      <when test="type == 'W'.toString()">
+                         WRITER LIKE '%${keyword}%'
+                      </when>
+                   </choose>
+                </trim>   
+             </foreach>
+             
+          </trim> 
+     </sql>
+     
+     <!-- modify registor에서 셀렉트 선택하면 업데이트하기 -->
+  <!--    <update>
+     
+     </update>
+	 -->
+	<!-- 게시판 목록 보여주기 -->
+  	<select id="getList" resultType="board">
+  		SELECT * FROM TBL_BOARD WHERE BNO > 0
+  	</select>
+  	
+  	<!-- 페이지에 따른 amount에 대한 목록 보여주기 --> 
+    <select id="getListWithPaging" resultType="board">
+	    SELECT BNO, TITLE, CONTENT, REGDATE, UPDATEDATE, REPLYCNT, WRITER,TSTATUS
+	    FROM
+	    (
+     	SELECT
+          /*+ INDEX_DESC(TBL_BOARD PK_BOARD)*/ <!-- pk인덱스를 내림차순 할것이다 최근에 쓴게 맨위에 -->
+          ROWNUM RN, BNO, TITLE, CONTENT, REGDATE, UPDATEDATE, REPLYCNT,WRITER,TSTATUS
+      	FROM 
+          TBL_BOARD
+        WHERE
+       <include refid="cri" /> <!-- 반복되는 쿼리 처리 -->
+          ROWNUM &lt;=#{pageNum} * #{amount} <!-- ROWNUM이 페이지번호*글개수 한거보다 작은것 3*10 -->
+  		)
+   		WHERE RN>(#{pageNum}-1) * #{amount} <!-- 서브쿼리 결과중에서 위에서부터 RN이 페이지번호 -1 * 글개수 보다 큰것 뽑아냄2*10 -->
+  	</select>
+
+  	
+  	<!-- 게시글 작성하기 -->
+  	<insert id="insert">
+  		INSERT INTO TBL_BOARD(BNO,TITLE,CONTENT,WRITER) 
+  		<!-- NEXTVAL:해당 시퀀스의 값 증가시킴 -->
+  		VALUES (SEQ_BOARD.NEXTVAL,#{title},#{content},#{writer})
+  	</insert>
+  	
+  	<!-- 마지막 시퀀스기준 하나 증가시킨 시퀀스에 INSERT시킴 -->
+  	<insert id="insertSelectKey">
+	<!-- order="BEFORE" : insert쿼리 수행전에 selectKey 수행-->
+		<selectKey order="BEFORE" keyProperty="bno" resultType="long">
+		<!-- 시퀀스 하나 증가시킨거 가져옴 -->
+		SELECT SEQ_BOARD.NEXTVAL FROM DUAL
+		</selectKey>
+		<!-- 위에서 증가시킨 시퀀스번호에 INSERT시킴 -->
+		INSERT INTO TBL_BOARD(BNO,TITLE,CONTENT,WRITER,PRICE,PSTATUS,DELIVERY,TSTATUS) 
+		VALUES (#{bno},#{title},#{content},#{writer},#{price},#{pstatus},#{delivery},#{tstatus})
+  	</insert>
+  	
+  	<!-- 게시글 상세보기 -->
+  	<select id="read" resultType="board">
+  		SELECT * FROM TBL_BOARD WHERE BNO = #{bno}
+  	</select>
+  	
+  	<!-- 게시글 수정 -->
+  	<update id="update">
+  		UPDATE TBL_BOARD SET
+		TITLE = #{title}
+  		,CONTENT = #{content}
+  		,WRITER = #{writer}
+  		,PRICE = #{price}
+  		,PSTATUS = #{pstatus}
+  		,DELIVERY = #{delivery}
+  		,TSTATUS = SUBSTR(#{tstatus},4)
+  		,UPDATEDATE = SYSDATE
+  		WHERE BNO = #{bno}
+  	</update>
+  	
+  	<!-- 게시글 삭제 -->
+  	<delete id="delete">
+  		DELETE FROM TBL_BOARD WHERE BNO=#{bno}
+  	</delete>
+  	
+  	<!-- 검색한 키워드 게시글 갯수 -->
+  	<select id="getTotalCount" resultType="int">
+  		SELECT COUNT(*) FROM TBL_BOARD WHERE 
+	<include refid="cri"/>
+		BNO >0
+  	</select>
+  	<!-- 댓글 개수 -->
+  	<update id="updateReplyCnt">
+  		UPDATE TBL_BOARD SET
+  		REPLYCNT = REPLYCNT + #{amount}
+  		WHERE BNO=#{bno}
+  	</update>
+	</mapper>

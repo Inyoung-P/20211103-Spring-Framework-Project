@@ -1,0 +1,46 @@
+package shop.j980108.service;
+
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+
+import lombok.AllArgsConstructor;
+import shop.j980108.domain.BoardVo;
+import shop.j980108.domain.BookVo;
+import shop.j980108.domain.Criteria;
+import shop.j980108.mapper.BookMapper;
+
+
+@Service
+@AllArgsConstructor
+public class BookServiceImpl implements BookService {
+   private BookMapper bookMapper; 
+
+   @Override
+   public void register(BookVo bookVo) {
+	   bookMapper.insert(bookVo);
+   }
+   
+   @Override
+   public List<BookVo> getList(Criteria cri) {
+      return bookMapper.getListWithPaging(cri);
+   }
+   
+   
+   //검색한 게시글 갯수 또는 게시글 개수
+   @Override
+   public int getTotal(Criteria cri){
+    return bookMapper.getTotalCount(cri);
+   }
+   //게시글 상세보기
+   @Override
+   public BookVo get(Long bno) {
+      return bookMapper.read(bno);
+   }
+
+   
+
+   
+}

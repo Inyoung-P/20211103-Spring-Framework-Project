@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="shop.j980108.mapper.ReservationMapper">
+ 
+ 	<!-- ******************************** 좌석 예약 ******************************** -->
+ 	<!-- @author 조윤정 @date 2021-10-25 ~ @name 예약 Mapper XML 파일     -->
+ 
+ 	<!-- 해당자리의 해당 시간에 예약이 있으면 1 없으면 0 -->
+ 	<select id="getTimetable"  resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_RESERVATION
+		WHERE SEATNO=#{seatNo}
+		AND REVTIME=#{revTime}
+		AND LOC=#{loc}
+		AND TO_CHAR(REVDATE,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')
+ 	</select>
+ 	
+ 	<!-- 해당 아이디가 해당 시간에 한 예약이 있으면 1 없으면 0 -->
+ 	<select id="checkDupRev" resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_RESERVATION
+		WHERE ID=#{id}
+		AND REVTIME=#{revTime}
+		AND TO_CHAR(REVDATE,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')
+ 	</select>
+
+ 	<!-- 예약하기 -->
+ 	<insert id="insert">
+		INSERT INTO TBL_RESERVATION(REVNO,SEATNO,ID,REVTIME,LOC) VALUES (SEQ_REVNO.NEXTVAL,#{seatNo},#{id},#{revTime},#{loc})
+ 	</insert>
+ 	
+ 	<!-- 예약 취소하기 -->
+ 	<delete id="delete">
+ 		DELETE TBL_RESERVATION WHERE REVNO=#{revNo}
+ 	</delete>
+ 	
+ 	<!-- 해당 아이디의 예약 가져오기 -->
+	<select id="getMyRev" resultType="reservation">
+		SELECT REVNO,LOC,SEATNO,ID,REVDATE,REVTIME
+		FROM TBL_RESERVATION
+		WHERE ID=#{id}
+		ORDER BY REVDATE DESC,REVTIME DESC
+	</select>
+	
+ 	<!-- 전체 예약 가져오기 -->
+	<select id="getRevList" resultType="reservation">
+		SELECT REVNO,LOC,SEATNO,ID,REVDATE,REVTIME
+		FROM TBL_RESERVATION
+		ORDER BY REVDATE DESC,REVTIME DESC
+	</select>
+ 	
+ </mapper>

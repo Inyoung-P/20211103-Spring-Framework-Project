@@ -1,0 +1,7 @@
+humanlib.username=HUMANLIB
+humanlib.password=HUMANLIB
+driver=oracle.jdbc.driver.OracleDriver
+url=jdbc:oracle:thin:@localhost:1521:xe
+localurl=jdbc:oracle:thin:@localhost:1521:xe
+spy.driver=net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+spy.localurl=jdbc:log4jdbc:oracle:thin:@db.980108.shop:1521:XE

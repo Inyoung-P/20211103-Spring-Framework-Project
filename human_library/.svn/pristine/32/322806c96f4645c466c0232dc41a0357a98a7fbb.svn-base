@@ -1,0 +1,40 @@
+package shop.j980108.mapper;
+
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import shop.j980108.domain.BookVo;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
+@Log4j
+public class BookMapperTests {
+	@Setter @Autowired
+	private BookMapper mapper;
+	
+	//책 등록하기
+	@Test
+	public void testInsert(){
+		BookVo book =  new BookVo();
+		book.setIsbn("1234567700 890s122111151111");
+		book.setTitle("영속 테스트 제목 - 셀렉트키");
+		book.setAuthors("영속 테스트 제목 - 셀렉트키");
+		book.setContents("영속 테스트 내용 - 셀렉트키");
+		//Date now = new Date();
+		//book.setDatetime(now);
+		book.setPrice(20000L);
+		book.setPublisher("영속 테스트 출판사 - 셀렉트키");
+		book.setThumbnail("https://ssearch1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1168779%3Ftimestamp%3D20200216125013");
+		book.setTranslators("영속 테스트 번역자 - 셀렉트키");
+		
+		log.info("before :: "+book);
+		mapper.insert(book);
+		log.info("after :: "+book);
+	}
+}

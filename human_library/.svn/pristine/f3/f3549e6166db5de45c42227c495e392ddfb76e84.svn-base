@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shop.j980108.mapper.MemberMapper">
+	<resultMap type="member" id="memberMap">
+		<result property="id" column="ID"/>
+		<result property="pwd" column="PWD"/>
+		<result property="studNo" column="STUDNO"/>
+		<result property="name" column="NAME"/>
+		<result property="nickName" column="NICKNAME"/>
+		<result property="phone" column="PHONE"/>
+		<result property="email" column="EMAIL"/>
+		<result property="uuid" column="UUID"/>
+		<result property="grade" column="GRADE"/>
+		<collection property="auths" resultMap="authMap"/>
+	</resultMap>
+	<resultMap type="auth" id="authMap">
+		<result property="id" column="id"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+
+	<insert id="memberJoin">
+		INSERT INTO TBL_MEMBER(ID, PWD, STUDNO, NAME, NICKNAME, PHONE, EMAIL, UUID, GRADE, LOANSCNT)
+				VALUES (#{id}, #{pwd}, #{studNo}, #{name}, #{nickName}, #{phone}, #{email}, #{uuid}, 1, 0)
+	</insert>
+	<insert id="authJoin">
+		INSERT INTO TBL_AUTH VALUES (#{id}, #{auth})
+	</insert>
+	
+	<update id="memberDelete">
+		UPDATE TBL_MEMBER 
+			SET GRADE = 0
+		WHERE ID = #{id}
+	</update>
+	<delete id="authDelete">
+		DELETE FROM TBL_AUTH
+		WHERE ID = #{id}
+	</delete>
+	
+	<select id="read" resultMap="memberMap">
+		SELECT *
+		FROM TBL_MEMBER
+		LEFT JOIN TBL_AUTH
+		USING(ID)
+		WHERE ID=#{id}
+	</select>
+	
+	<select id="memberLogin" resultMap="memberMap">
+		SELECT ID, PWD 
+		  FROM TBL_MEMBER
+		 WHERE ID = #{id}
+		 AND PWD = #{pwd}   
+	</select>
+	
+
+	
+	<!-- 아이디로 회원 조회
+		 @author 박인영 @date 2021-11-02          -->
+	<select id="findMemberByID" resultMap="memberMap">
+		SELECT ID, PWD, STUDNO, NAME, NICKNAME, PHONE, EMAIL, UUID, GRADE, LOANSCNT 
+		FROM TBL_MEMBER WHERE ID = #{id}
+	</select>	
+	
+	<!-- 회원의 대출중 도서수(loansCnt) 변경
+		 @author 박인영 @date 2021-11-01          -->
+ 	<update id="updateMemberLoansCnt">
+ 		UPDATE TBL_MEMBER SET LOANSCNT = LOANSCNT + #{loansCnt} WHERE ID = #{id}
+ 	</update>
+ 	
+</mapper>

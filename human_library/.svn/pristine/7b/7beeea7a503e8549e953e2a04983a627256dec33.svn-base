@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="shop.j980108.mapper.LoansMapper">
+
+ 	<!-- 대출테이블에 대출예약 정보(대출번호, 대출예약일, 대출만기일, 상태, 도서번호, 아이디) 입력 -->
+ 	<insert id="insertLoansReservation">
+ 		INSERT INTO TBL_LOANS (LNO, RDATE, REDATE, STATUS, BKNO, ID) 
+ 		VALUES (SEQ_LOANS.NEXTVAL, SYSDATE, SYSDATE+1, 0, #{bkno}, #{id})
+ 	</insert> 
+ 	
+ 	<!-- 대출 관련 상태 변경 -->
+  	<update id="updateLoansStatus">
+  		UPDATE TBL_LOANS SET STATUS = #{status} WHERE LNO = #{lno}
+  	</update>
+
+ 	<!-- 대출 예약 건 대출 완료 후 추가 정보(대출일, 반납예정일, 대출 상태) 입력 -->
+  	<update id="updateLoans">
+  		UPDATE TBL_LOANS SET LDATE = SYSDATE, RDDATE = SYSDATE+14, STATUS = 5 WHERE LNO = #{lno}
+  	</update>
+	
+	<!-- 대출 테이블에 대출 관련 정보(대출번호, 대출일, 반납예정일, 대출상태, 도서번호, 아이디) 입력 -->
+ 	<insert id="insertLoans">
+ 		INSERT INTO TBL_LOANS (LNO, LDATE, RDDATE, STATUS, BKNO, ID) 
+ 		VALUES (SEQ_LOANS.NEXTVAL, SYSDATE, SYSDATE+14, 5, #{bkno}, #{id})
+ 	</insert> 
+
+	<!-- 대출중인 도서 중 반납예정일 지난 건 연체 처리 -->
+	<update id="updateLoansOverdue">
+		UPDATE TBL_LOANS SET STATUS = 6 WHERE STATUS = 5 AND TO_CHAR(RDDATE, 'YYYYMMDD') = TO_CHAR(SYSDATE-1,'YYYYMMDD')
+	</update>
+
+	<!-- 연체 처리된 건 리스트 (for 반납 독촉 문자 발송) -->
+	<select id="listUpdateLoansOverdue" resultType="sms">
+		SELECT PHONE AS TONO, ID, NAME, LNO, TITLE FROM TBL_LOANS 
+		NATURAL JOIN (SELECT BKNO, TITLE FROM TBL_POSSESSION NATURAL JOIN TBL_BOOK) 
+		NATURAL JOIN TBL_MEMBER WHERE STATUS = 6 AND TO_CHAR(RDDATE, 'YYYYMMDD') = TO_CHAR(SYSDATE-1,'YYYYMMDD')
+	</select>
+
+	<!-- 대출중인 도서 반납 정보(반납일, 대출상태) 입력 -->
+	<update id="returnLoans">
+		UPDATE TBL_LOANS SET RTDATE = SYSDATE, STATUS = #{status} WHERE LNO = #{lno}
+	</update>
+
+	<!-- 대출 예약 현황 리스트 by Member -->
+	<select id="listLoansReservationForMember" resultType="loans">
+		SELECT /*+ INDEX(L PK_LOANS)*/
+		       L.LNO, TO_CHAR(L.RDATE, 'YYYY.MM.DD') AS RDATE, TO_CHAR(L.REDATE, 'YYYY.MM.DD') AS REDATE, L.BKNO, P.TITLE, L.STATUS
+		FROM TBL_LOANS L
+		JOIN (SELECT BKNO, TITLE FROM TBL_POSSESSION NATURAL JOIN TBL_BOOK) P ON L.BKNO = P.BKNO
+		WHERE L.STATUS in (0, 4) AND L.ID = #{id}
+	</select>
+
+	<!-- 대출 예약 신청 현황 리스트 by manager -->
+  	<select id="listLoansReservationForManager" resultType="loans">
+		SELECT LNO, RDATE, REDATE, BKNO, TITLE, ID, STUDNO, NAME
+		FROM (
+		    SELECT /*+ INDEX(L PK_LOANS)*/
+		       ROWNUM RN, L.LNO, TO_CHAR(L.RDATE, 'YY.MM.DD') AS RDATE, TO_CHAR(L.REDATE, 'YY.MM.DD') AS REDATE, L.BKNO, P.TITLE, L.ID, S.STUDNO, S.NAME
+		    FROM TBL_LOANS L
+		    JOIN (SELECT ID, STUDNO, NAME FROM TBL_STUDENT NATURAL JOIN TBL_MEMBER) S ON L.ID = S.ID
+		    JOIN (SELECT BKNO, TITLE FROM TBL_POSSESSION NATURAL JOIN TBL_BOOK) P ON L.BKNO = P.BKNO
+		    WHERE L.STATUS = #{status}
+			AND ROWNUM &lt;= #{cri.pageNum} * #{cri.amount}
+		)
+		WHERE RN &gt; (#{cri.pageNum} - 1) * #{cri.amount}
+		ORDER BY LNO
+ 	</select>
+
+	<!-- 대출중 리스트 by Member -->
+	<select id="listLoansForMember" resultType="loans">
+		SELECT /*+ INDEX(L PK_LOANS)*/
+		       L.LNO, TO_CHAR(L.LDATE, 'YYYY.MM.DD') AS LDATE, TO_CHAR(L.RDDATE, 'YYYY.MM.DD') AS RDDATE, L.BKNO, P.TITLE, L.STATUS
+		FROM TBL_LOANS L
+		JOIN (SELECT BKNO, TITLE FROM TBL_POSSESSION NATURAL JOIN TBL_BOOK) P ON L.BKNO = P.BKNO
+		WHERE L.STATUS in (5, 6) AND L.ID = #{id}
+	</select>
+
+	<!-- 대출중 리스트 by Member -->
+	<select id="listLoansForManager" resultType="loans">
+		SELECT LNO, LDATE, RDDATE, BKNO, TITLE, STATUS, ID, STUDNO, NAME
+		FROM (
+		    SELECT /*+ INDEX(L PK_LOANS)*/
+		       ROWNUM RN, L.LNO, TO_CHAR(L.LDATE, 'YY.MM.DD') AS LDATE, TO_CHAR(L.RDDATE, 'YY.MM.DD') AS RDDATE, L.BKNO, P.TITLE, L.STATUS, L.ID, S.STUDNO, S.NAME
+		    FROM TBL_LOANS L
+		    JOIN (SELECT ID, STUDNO, NAME FROM TBL_STUDENT NATURAL JOIN TBL_MEMBER) S
+		    ON L.ID = S.ID
+		    JOIN (SELECT BKNO, TITLE FROM TBL_POSSESSION NATURAL JOIN TBL_BOOK) P
+		    ON L.BKNO = P.BKNO
+		    WHERE L.STATUS in (5, 6)
+			AND ROWNUM &lt;= #{pageNum} * #{amount}
+		)
+		WHERE RN &gt; (#{pageNum} - 1) * #{amount}
+		ORDER BY LNO	
+	</select>
+
+  	<!-- 최근 7일 이내 반납 도서 개수 by Member -->
+  	<select id="getReturnedLoansCountRecently" resultType="int">
+  		SELECT NVL(COUNT(*), 0) FROM TBL_LOANS WHERE STATUS in (5, 6) AND RTDATE > SYSDATE-7 AND ID = #{id}
+  	</select>
+
+	<!-- 최근 7일 이내 반납 도서 리스트 by Member -->
+	<select id="listReturnedLoansRecently" resultType="loans">
+		SELECT LNO, LDATE, RTDATE, BKNO, TITLE, STATUS
+		FROM (
+		    SELECT ROWNUM RN, L.LNO, TO_CHAR(L.LDATE, 'YYYY.MM.DD') AS LDATE, TO_CHAR(L.RTDATE, 'YYYY.MM.DD') AS RTDATE, L.BKNO, P.TITLE, L.STATUS
+		    FROM TBL_LOANS L
+		    JOIN (SELECT BKNO, TITLE FROM TBL_POSSESSION NATURAL JOIN TBL_BOOK) P ON L.BKNO = P.BKNO
+		    WHERE L.STATUS in (7, 8) AND RTDATE > SYSDATE-7 AND L.ID = #{id} 
+		    AND ROWNUM &lt;= #{cri.pageNum} * #{cri.amount}
+		    ORDER BY RTDATE DESC
+		)
+		WHERE RN &gt; (#{cri.pageNum} - 1) * #{cri.amount}
+	</select>
+
+	<!-- 반납 완료 대출 리스트 by Member -->
+	<select id="listReturnedLoans" resultType="loans">
+		SELECT LNO, LDATE, RTDATE, BKNO, TITLE, STATUS
+		FROM (
+		    SELECT ROWNUM RN, L.LNO, TO_CHAR(L.LDATE, 'YYYY.MM.DD') AS LDATE, TO_CHAR(L.RTDATE, 'YYYY.MM.DD') AS RTDATE, L.BKNO, P.TITLE, L.STATUS
+		    FROM TBL_LOANS L
+		    JOIN (SELECT BKNO, TITLE FROM TBL_POSSESSION NATURAL JOIN TBL_BOOK) P ON L.BKNO = P.BKNO
+		    WHERE L.STATUS in (7, 8) AND L.ID = #{id} AND ROWNUM &lt;= #{cri.pageNum} * #{cri.amount}
+		    ORDER BY RTDATE DESC
+		)
+		WHERE RN &gt; (#{cri.pageNum} - 1) * #{cri.amount}
+	</select>
+
+ 	<!-- 회원의 연체 패널티(Penalty.prDays) 잔여일수가 있는지 조회 : 잔여일 수가 남은 경우 언제까지 대출이 불가능한지 날짜 반환 -->
+ 	<select id="selectPenalty" resultType="string">
+ 		SELECT
+		    CASE 
+		        WHEN SUM(PRDAYS) = '' THEN 'NULL' 
+		        WHEN SUM(PRDAYS) = 0 THEN 'NULL'
+		        ELSE TO_CHAR(SYSDATE+SUM(PRDAYS), 'YYYY/MM/DD')     
+		    END
+		FROM TBL_PENALTY 
+		WHERE ID = #{id}
+ 	</select>
+
+  	<!-- 대출 상태별 개수 조회 for Member -->
+  	<select id="getLoansStatusCount" resultType="int">
+  		SELECT NVL(COUNT(*), 0) FROM TBL_LOANS WHERE LNO > 0 AND STATUS = #{status} AND ID = #{id}
+  	</select>
+  	
+  	<!-- 대출 상태별 개수 조회 for Manager -->
+  	<select id="getLoansStatusTotalCount" resultType="int">
+  		SELECT NVL(COUNT(*), 0) FROM TBL_LOANS WHERE LNO > 0 AND STATUS = #{status}
+  	</select>
+ 
+   	<!-- 대출 이중 상태 개수 조회 for Member -->
+  	<select id="getLoansDualStatusCount" resultType="int">
+  		SELECT NVL(COUNT(*), 0) FROM TBL_LOANS WHERE LNO > 0 AND STATUS in (#{status1}, #{status2}) AND ID = #{id}
+  	</select>
+  	
+  	<!-- 대출 이중 상태 개수 조회 for Manager -->
+  	<select id="getLoansDualStatusTotalCount" resultType="int">
+  		SELECT NVL(COUNT(*), 0) FROM TBL_LOANS WHERE LNO > 0 AND STATUS in (#{status1}, #{status2})
+  	</select>
+  	
+  	<!-- 대출번호로 대출 조회 -->
+  	<select id="findLoansByLno" resultType="loans">
+  		SELECT LNO, RDATE, REDATE, LDATE, RDDATE, RTDATE, STATUS, BKNO, ID FROM TBL_LOANS WHERE LNO = #{lno}
+  	</select>
+ 	
+ </mapper>

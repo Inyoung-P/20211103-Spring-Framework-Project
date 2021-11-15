@@ -1,0 +1,21 @@
+package shop.j980108.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+
+/**
+ * @author 조윤정
+ * @date 2021-10-27~
+ * @name 예약 컨트롤러
+ */
+
+@Controller
+@Log4j
+@RequestMapping("reservation/*")
+@AllArgsConstructor
+public class ReservationController {
+
+}

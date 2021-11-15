@@ -1,0 +1,34 @@
+package shop.j980108.domain;
+
+import java.util.Date;
+import org.apache.ibatis.type.Alias;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author 김재은
+ * @date 2021-10-18
+ * @name 도서상세보기 리뷰댓글
+ */
+@Data @NoArgsConstructor @AllArgsConstructor
+public class ReviewVo {
+	/*리뷰댓글번호*/
+	private Long rvno;
+	/*내용*/
+	private String reply;
+	/*작성일*/
+	private Date regDate;
+	/*수정일*/
+	private Date updateDate;
+	/*작성자아이디*/
+	private String id;
+	/*점수*/
+	private Long score;
+	/*태그*/
+	private boolean tag;
+	/*ISBN*/
+	private String isvn;
+}
+

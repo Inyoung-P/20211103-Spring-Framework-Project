@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="shop.j980108.mapper.NAvailableMapper">
+ 
+ 	<!-- ******************************** 좌석 예약 ******************************** -->
+ 	<!-- @author 조윤정 @date 2021-10-25 ~ @name 예약불가 Mapper XML 파일     -->
+ 
+ 	<!-- 예약불가데이터 insert -->
+ 	<insert id="insert">
+		INSERT INTO TBL_NAVAILABLE(NANO,SEATNO,LOC,NDATE,REASON) VALUES (SEQ_NA.NEXTVAL,#{seatNo},#{loc},#{nDate},#{reason})
+ 	</insert>
+ 	<delete id="delete">
+ 		DELETE TBL_NAVAILABLE WHERE NANO=#{nANo}
+ 	</delete>
+ 	<select id="getList" resultType="navailable">
+ 		SELECT NANO,SEATNO,LOC,TO_CHAR(NDATE,'YYYY-MM-DD') NDATE,REASON FROM TBL_NAVAILABLE
+ 	</select>
+
+
+ </mapper>

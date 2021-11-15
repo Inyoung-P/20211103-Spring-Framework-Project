@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="shop.j980108.mapper.ReviewMapper">
+ 	 <sql id="cri">
+          <trim prefix="(" suffix=") AND" prefixOverrides="OR">
+            <foreach collection="cri.typeArr" item="type">
+               <trim prefix="OR">
+                  <choose>
+                     <when test="type == 'T'.toString()">
+                        TITLE LIKE '%'||#{keyword}||'%'
+                     </when>
+                     <when test="type == 'C'.toString()">
+                        CONTENT LIKE '%${keyword}%'
+                     </when>
+                     <when test="type == 'W'.toString()">
+                        WRITER LIKE '%${keyword}%'
+                     </when>
+                  </choose>
+               </trim>   
+            </foreach>
+            
+         </trim> 
+    </sql>
+  <!-- 댓글작성 -->
+  <insert id="insert">
+	  	INSERT INTO TBL_REVIEW (RNO,ISBN,REPLY,REPLYER)
+	  	VALUES (SEQ_REVIEW.NEXTVAL,#{isbn},#{reply},#{replyer})
+  </insert>
+   <!-- 댓글수정 -->
+  <update id="update">
+	     UPDATE TBL_REVIEW SET 
+	     REPLY = #{reply}, 
+	     REPLYER = #{replyer}, 
+	     UPDATEDATE = SYSDATE
+	     WHERE RNO = #{rno}
+   </update>
+  	
+   <delete id="delete">
+  		 DELETE TBL_REVIEW WHERE RNO = #{rno}
+   </delete>
+	 
+	<!-- 댓글개수 -->
+  	<select id="getTotalCount" resultType="int">
+  		SELECT COUNT(*) FROM TBL_REVIEW WHERE ISBN = #{isbn} AND
+	<include refid="cri"/>
+		RNO >0
+  	</select>
+ 	<select id="read" resultType="review">
+  		SELECT * FROM TBL_REVIEW WHERE RNO = #{rno}
+  	</select>
+	  		<!-- &lt; < -->
+	  	<select id="getList" resultType="review">
+	  	SELECT /*+ INDEX(TR IDX_REVIEW) */ *
+	    FROM tbl_review TR
+	    WHERE ISBN=#{isbn}
+	    <if test="cri.lastRno != 0">
+	    AND RNO &lt; #{cri.lastRno}
+	    </if>
+	    AND ROWNUM &lt;=${cri.amount}
+	  	</select>
+  	
+	 <!-- 페이지에 따른 amount에 대한 목록 보여주기 --> 
+	 <select id="getListWithPaging" resultType="review">
+	    SELECT RNO,ISBN,REPLY,REPLYER,REPLYDATE,UPDATEDATE
+	    FROM
+	    (
+     	SELECT
+          /*+ INDEX_DESC(TBL_REVIEW PK_RVNO)*/ <!-- pk인덱스를 내림차순 할것이다 최근에 쓴게 맨위에 -->
+          ROWNUM RN,RNO,ISBN,REPLY,REPLYER,REPLYDATE,UPDATEDATE
+      	FROM 
+          TBL_REVIEW
+        WHERE ISBN = #{isbn}
+        AND
+       <include refid="cri" /> <!-- 반복되는 쿼리 처리 -->
+          ROWNUM &lt;=#{cri.pageNum} * #{cri.amount} <!-- ROWNUM이 페이지번호*글개수 한거보다 작은것 3*10 -->
+  		)
+   		WHERE RN>(#{cri.pageNum}-1) * #{cri.amount} <!-- 서브쿼리 결과중에서 위에서부터 RN이 페이지번호 -1 * 글개수 보다 큰것 뽑아냄2*10 -->
+  	 </select>
+	  </mapper> 

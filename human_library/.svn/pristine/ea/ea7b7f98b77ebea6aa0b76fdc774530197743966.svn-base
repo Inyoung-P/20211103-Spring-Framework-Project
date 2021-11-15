@@ -1,0 +1,23 @@
+package shop.j980108.service;
+
+
+import org.springframework.stereotype.Service;
+
+import lombok.AllArgsConstructor;
+import shop.j980108.domain.BookVo;
+import shop.j980108.mapper.BookMapper;
+
+
+@Service
+@AllArgsConstructor
+public class BookServiceImpl implements BookService {
+   private BookMapper bookMapper; 
+
+   @Override
+   public void register(BookVo bookVo) {
+	   bookMapper.insert(bookVo);
+   }
+
+   
+   
+}

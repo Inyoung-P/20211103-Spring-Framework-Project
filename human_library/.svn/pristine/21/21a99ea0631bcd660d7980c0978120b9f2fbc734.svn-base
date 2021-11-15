@@ -1,0 +1,94 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/security/tags"  prefix="sec"%>
+
+    <header class="fixed-top bg-white">
+    <sec:authentication property="principal" var="pinfo"/>
+        <div class="header">
+            <div class="headerArea mx-auto p-3">
+                <div class="headerTop col mx-auto p-0 row">
+                    <!-- Logo -->
+                    <div class="headerLogo col-3 col-md-2 m-0 p-0">
+                        <a href="/"><img class="w-100" src="${pageContext.request.contextPath}/resources/img/hmu_logo_nav.png" alt="휴먼대학교 도서관 로고"></a>
+                    </div>
+                    <!-- Search -->
+                    <div class="d-none d-md-inline col-md-8 m-0 p-0">
+                        <form class="col p-0 text-center">
+                            <div class="headerSearch text-left">
+                                <label class="searchRadio01 text-center bg-primary small" for="searchPossession">
+                                    <input type="radio" id="searchPossession" name="search-type" value="" checked="checked"> 통합검색
+                                </label>
+                                <label class="searchRadio02 text-center bg-info text-primary small" for="searchMarket">
+                                    <input class="" type="radio" id="searchMarket" name="search-type" value="" > 중고검색
+                                </label>
+                                <input class="searchInput" type="text"/>
+                                <button class="searchBtn" type="submit" ></button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Login -->
+                  
+                    <div class="headerLogin d-none d-sm-inline col-md-2 col-9 m-0 p-0 text-right">
+                 
+                    
+									<sec:authorize access="isAnonymous()">
+									<img src="${pageContext.request.contextPath}/resources/img/basic_profile.jpg">&nbsp;&nbsp;				
+										<a class="text-decoration-none text-dark submit"  href="/member/login">로그인</a>
+                        				<span class="d-none d-xl-inline text-dark">&nbsp;/&nbsp;</span>
+										<a class="d-none d-xl-inline text-decoration-none text-dark" href="/member/terms">회원가입</a>
+									</sec:authorize>
+															
+									
+         							<sec:authorize access="isAuthenticated()">
+         							<img src="${pageContext.request.contextPath}/resources/img/basic_profile.jpg">&nbsp;&nbsp;
+         								<form action="/logout" method="post">
+         									<button>로그아웃</button><sec:csrfInput/>
+										</form>
+										<span class="d-none d-xl-inline text-dark">&nbsp;/&nbsp;</span>
+										<a class="d-none d-xl-inline text-decoration-none text-dark" href="/member/profile">정보수정</a>
+									</sec:authorize>
+	                	
+	                	<div class="dropdown d-inline d-xl-none">
+							<button type="button" class="btn btn-white text-dark dropdown-toggle p-0" data-toggle="dropdown"></button>
+							<div class="dropdown-menu">
+								<a class="dropdown-item py-0" href="/member/terms">회원가입</a>
+								<a class="dropdown-item py-0" href="#">아이디찾기</a>
+								<a class="dropdown-item py-0" href="#">비밀번호찾기</a>
+							</div>
+						</div>
+                    </div>
+                    <!-- mobile -->
+	                <div class="dropdown col-9 p-0 text-right d-inline d-sm-none">
+						<button type="button" class="btn btn-white text-primary dropdown-toggle" data-toggle="dropdown">
+							<i class="fas fa-bars"></i>
+						</button>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="/member/login">로그인</a>
+							<a class="dropdown-item" href="/member/terms">회원가입</a>
+							<a class="dropdown-item" href="#">아이디찾기</a>
+							<a class="dropdown-item pb-2 border-bottom border-light" href="#">비밀번호찾기</a>
+							<a class="dropdown-item pt-2" href="#">공지사항</a>
+							<a class="dropdown-item" href="#">도서관</a>
+							<a class="dropdown-item" href="/seat/choose">열람실</a>
+							<a class="dropdown-item pb-2 border-bottom border-light" href="#">휴먼마켓</a>
+							<a class="dropdown-item pt-2" href="#">내서재</a>
+							<a class="dropdown-item pt-2" href="#">내좌석</a>
+							<a class="dropdown-item pt-2" href="#">회원정보수정</a>
+						</div>
+					</div>
+                </div> 
+            </div>
+        </div>
+
+        <nav class="clearfix d-none d-sm-block bg-light">
+            <div class="navArea mx-auto pt-1">
+                <ul class="navBar nav nav-justified m-0">
+                    <li class="nav-item"><a href="#">공지사항</a></li>
+                    <li class="nav-item"><a href="#">도서관</a></li>
+                    <li class="nav-item"><a href="/seat/choose">열람실</a></li>
+                    <li class="nav-item"><a href="#">휴먼마켓</a></li>
+                    <li class="nav-item"><a href="/member/profile">MY</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>

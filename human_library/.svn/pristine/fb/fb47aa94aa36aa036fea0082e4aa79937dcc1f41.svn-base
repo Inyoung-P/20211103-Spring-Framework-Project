@@ -1,0 +1,10 @@
+package shop.j980108.service;
+
+
+import shop.j980108.domain.BookVo;
+
+
+
+public interface BookService {
+	void register(BookVo bookVo); //게시글 작성
+}

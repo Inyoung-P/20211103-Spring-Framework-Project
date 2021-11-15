@@ -1,0 +1,48 @@
+package shop.j980108.controller;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import lombok.Setter;
+import shop.j980108.domain.MemberVo;
+import shop.j980108.service.MemberService;
+
+@Controller
+@RequestMapping("/member")
+public class MemberUpdateController {
+	
+	@Autowired @Setter
+	MemberService memberservice;
+	
+//	// 회원 탈퇴 get
+//	@GetMapping("/delete")
+//	public String memberDeleteView() throws Exception{
+//		return "delete";
+//	}
+//		
+//	// 회원 탈퇴 post
+//	@PostMapping("/delete")
+//	public String memberDelete(MemberVo member, HttpSession session, RedirectAttributes rttr) throws Exception{
+//		
+//		// 세션에 있는 memberpw를 가져와 memberpw변수에 넣어줍니다.
+//		MemberVo memberpw = (MemberVo) session.getAttribute("member");
+//		// 세션에있는 비밀번호
+//		String sessionPass = memberpw.getPwd();
+//		// member로 들어오는 비밀번호
+//		String voPass = member.getPwd();
+//		
+//		if(!(sessionPass.equals(voPass))) {
+//			rttr.addFlashAttribute("msg", false);
+//			return "redirect:/member/delete";
+//		}
+//		memberservice.memberDelete(member);
+//		session.invalidate();
+//		return "redirect:/";
+//	}
+}

@@ -1,0 +1,229 @@
+@CHARSET "UTF-8";
+
+/* @author 박인영 @name Header CSS */
+header .headerArea {max-width: 1200px;}
+header .headerTop {height: 56px;}
+@media screen and (max-width: 575px) {
+    header .headerTop {height: 40px;}
+}
+header .headerLogo {height: 56px; line-height: 56px;}
+@media screen and (max-width: 575px) {
+    header .headerLogo {height: 40px; line-height: 40px;}
+}
+header .headerLogo img {min-width: 120px}
+header .headerLogin {height: 56px; line-height: 56px;}
+header .headerLogin img {width: 40px; width: 40px; border-radius: 50%;}
+header .headerSearch {width: 720px; margin: 0; padding: 4px; display: inline-block; border: 3px solid #3498db; border-radius: 30px;}
+header .searchRadio01 {width: 110px; height: 40px; line-height: 40px; border-radius: 30px 0 0 30px; margin: 0; color: #fff;}
+header .searchRadio02 {width: 110px; height: 40px; line-height: 40px; border-radius:0 30px 30px 0; margin: 0; margin-left: -5px;}
+header .searchInput {width: 440px; height: 40px; line-height: 40px; border: 0; padding: 10px; border-radius: 30px;}
+header .searchInput:focus {outline: none !important; border:1px solid #ecf0f1;}
+header .searchBtn {width: 30px; height: 30px; background:url('../img/search.png') no-repeat; background-size:30px; vertical-align: middle; border: 0;}
+@media screen and (max-width: 1199px) {
+    header .headerSearch {width: 600px;}
+    header .searchInput {width: 320px;}
+}
+@media screen and (max-width: 930px) {
+    header .headerSearch {width: 500px;}
+    header .searchInput {width: 220px;}
+}
+nav {margin: -1px;}
+nav .navArea {max-width: 1200px; height: 60px; line-height: 56px;}
+nav .nav-item {height: 48px; margin: 0; padding: 0;}
+nav .nav-item a {height: 40px; line-height: 40px; margin: 0; padding: 5px 20px; 
+    color: #222; font-weight: 400; text-decoration: none;}
+nav .nav-item a:hover {border-top: 2px solid #3498db;}
+
+/* @author 박인영 @name Footer CSS */
+footer .footerArea {max-width: 1200px;}
+footer .footerArea img {height: 36px;}
+footer .footerTitle {color:#fff;}
+@media screen and (max-width: 768px) {
+    footer .footerItem {border-bottom: 1px solid #ecf0f1;}
+}
+
+/* @author 박인영 @name Index CSS */
+main {margin-top: 147px;}
+@media screen and (max-width: 575px) {
+    main {margin-top: 72px;}
+}
+.indexBanner {height: 370px; background: url('../img/library.jpg') no-repeat; padding:35px 0; background-size:cover;}
+.indexBanner .indexBannerArea {max-width: 1200px;}
+.indexBanner .indexWrap {display: flex; justify-content: space-around;}
+.indexBanner .sliderBox {width: 789px; height: 300px; border:10px solid #ecf0f1;}
+.indexBanner .carousel-inner img {width: 100%; height: 100%;}
+.indexBanner .statusBox {width: 330px; height: 300px; border:10px solid #ecf0f1; background: #fad681;}
+.indexBanner .statusBox h6 {line-height: 22px;}
+@media screen and (max-width: 1199px) {
+    .indexBanner {height: 300px;}
+    .indexBanner .sliderBox {width: 600px; height: 230px;}
+    .indexBanner .statusBox {height: 230px;}
+}
+@media screen and (max-width: 992px) {
+    .indexBanner {height: auto;}
+    .indexBanner .indexWrap {display: block;}
+    .indexBanner .sliderBox {width: 80%; height: auto; margin: 0 auto;}
+    .indexBanner .statusBox {width: 80%; height: auto; margin: 20px auto 0;}
+}
+.indexBoard .indexBoardArea {max-width: 1200px;}
+.indexBoard img {height: 100%;}
+
+/* @author 박인영 @name Manager Page CSS */
+.managerBoard .managerBoardArea {max-width: 1200px;}
+.managerBoard .managerBoardBox {min-height: 642px}
+.managerListPagination .btn-outline-primary:not(:disabled):not(.disabled).active, .btn-outline-primary:not(:disabled):not(.disabled):active, .show>.btn-outline-primary.dropdown-toggle {background-color: #76828e; border-color: #76828e; !important}
+
+/* @author 박인영 @name 공통 CSS */
+.modal .LoadingLayer {margin-top: 200px;}
+.modal .LoadingLayerBox {margin-top: 100px;}
+
+
+
+/*윤정*/
+
+.vprogress .circle{
+    width:42%;
+    border-radius: 20%;
+    padding-bottom: 42%;
+    text-align: center;
+    display:block;
+    margin: 10% auto 0 auto;
+}
+
+.vprogress .circle:nth-child(n+2){
+    margin-top:40% ;
+}
+
+.vprogress .circle:last-child{
+    margin-bottom:10% ;
+}
+
+.hprogress .circle{
+    width:15%;
+    border-radius: 20%;
+    padding-bottom: 15%;
+    text-align: center;
+    display: inline-block;
+}
+
+.hprogress .circle:nth-child(n+2){
+    margin-left:20% ;
+}
+
+
+#skies{
+    padding-top:25%;
+    min-height: 210px;
+    z-index:1
+}
+#mainSec{
+    position: relative;
+    top:-90px;
+    text-align: center;
+    border-radius:10px;
+}
+
+    
+.revSec input[type=radio]{
+    display:none;
+    text-align: center;
+}
+    
+.revSec label{
+    text-align: center;
+    font-size: 1rem;
+}
+
+.timeTable label{
+    border-radius: 0;
+}
+
+.timeTable input[type=checkbox]{
+    display: none;
+}
+
+.timeTable .checks [class*="col-"] {
+    border-right:1px solid gray;
+    border-left:1px solid gray;
+}
+
+.times .col-1{
+    color: #fff;
+}
+
+.locSec .col-5{
+    padding-top: 15%;
+    padding-bottom: 15%;
+}
+
+.locSec .col-5 a{
+    padding: 15%;
+}
+
+.comTitle{
+	font-size:4rem;
+}
+
+.comSeat{
+	font-size:3rem;
+}
+
+.comNotice{
+	font-size:2.5rem;
+}
+
+.completeSec .row a{
+	font-size:2rem;
+}
+
+.ing{
+	color:red;
+}
+
+
+@media screen and (max-width:576px) {
+    .html{
+         font-size:0.5px !important;
+    }
+    .completeHtml{
+    	font-size:4px !important;
+    }
+}
+
+@media screen and (min-width:576px) {
+    .html{
+        font-size:6px !important;
+    }
+    .completeHtml{
+    	font-size:6px !important;
+    }
+}
+
+@media screen and (min-width:768px) {
+    .html{
+        font-size:8px !important;
+    }
+    .completeHtml{
+    	font-size:7px !important;
+    }
+}
+
+@media screen and (min-width:992px) {
+    .html{
+        font-size:9px !important;
+    }
+    .vprogress .circle{
+    	width:50%;
+    	padding-bottom:50%;
+    }
+}
+
+@media screen and (min-width:1200px) {
+    .html{
+        font-size:12px !important;
+    }
+     .vprogress .circle{
+    	width:42%;
+    	padding-bottom:42%;
+    }
+}

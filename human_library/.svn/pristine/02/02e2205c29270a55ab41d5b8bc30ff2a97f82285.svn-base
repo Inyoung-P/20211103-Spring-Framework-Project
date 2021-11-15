@@ -1,0 +1,21 @@
+package shop.j980108.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import shop.j980108.domain.BoardVo;
+import shop.j980108.domain.BookVo;
+import shop.j980108.domain.Criteria;
+import shop.j980108.domain.ReplyCriteria;
+
+public interface BookMapper {
+	
+	//insert
+	void insert(BookVo bookVo); 
+	//select
+	List<BookVo> getListWithPaging(Criteria cri); //페이지번호,보여줄글개수에 따른 목록 보여주기
+	int getTotalCount(Criteria cri); //검색한 게시글 갯수 또는 게시글 개수
+	BookVo read(Long bno); //게시글 상세보기
+	void updateReviewCnt(@Param("bno") Long bno,@Param("amount") int amount);//트랜잭션
+}

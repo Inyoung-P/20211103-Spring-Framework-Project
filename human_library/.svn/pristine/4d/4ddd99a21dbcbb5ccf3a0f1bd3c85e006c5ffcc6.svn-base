@@ -1,0 +1,63 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko" class="html">
+<head>
+	<meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>휴먼대학교 도서관</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+	<jsp:include page="../includes/head.jsp"></jsp:include>
+</head>
+<body>
+	<jsp:include page="../includes/header.jsp"></jsp:include>
+		<main>
+	        <div class="row" id="skies">
+	        </div>
+	        <div class="container">
+	        <div class="row col-10 mx-auto py-3" id="mainSec">
+	            <div class="col-lg-3 col-12" id="progress">
+	                <div class="vprogress d-none d-lg-block">
+	                    <div class="circle bg-primary"></div>
+	                    <div class="circle bg-primary"></div>
+	                    <div class="circle bg-primary"></div>      
+	                </div>
+	                <div class="hprogress d-lg-none my-3">
+	                    <div class="circle bg-primary my-2"></div>
+	                    <div class="circle bg-primary my-2"></div>
+	                    <div class="circle bg-primary my-2"></div>      
+	                </div>
+	            </div>
+	            <div class="col-lg-9 col-12 my-8">
+	            	<div class="locSec my-4 p-1 col-11 mx-auto">
+                    <div class="row my-4">
+                        <div class="col-5 mx-auto">
+                            <a href="/seat/list?loc=1">제 1열람실</a>
+                        </div>
+                        <div class="col-5 mx-auto">
+                            <a href="/seat/list?loc=2">제 2열람실</a>
+                        </div>
+                    </div>
+                    <div class="row my-4">
+                        <div class="col-5 mx-auto">
+                            <a href="/seat/list?loc=3">제 3열람실</a>
+                        </div>
+                        <div class="col-5 mx-auto">
+                            <a href="/seat/list?loc=4">제 4열람실</a>
+                        </div>
+                    </div>
+                </div>
+	            </div>
+	        </div>
+	    </div>
+    </main>
+    <jsp:include page="../includes/footer.jsp"></jsp:include>
+    <script>
+    	var code='${code}';
+    	if(code==1){
+    		alert("선택하신 시간에 이미 예약된 좌석이 있습니다.");
+    	} else if(code==2){
+    		alert("이미 예약된 좌석입니다.");
+    	}
+    </script>
+</body>
+</html>

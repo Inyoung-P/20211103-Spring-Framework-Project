@@ -1,0 +1,25 @@
+/**
+ * @author 김재은
+ * @date 2021-11-2 ~ 
+ * @name 도서 관련 비동기 기능
+ */
+var bookService = (function() { 
+
+	/** 도서 등록 */
+	function bookregister(book, callback) {
+		$.ajax({
+		    type : "post",
+			url : "/book/register",
+			data : JSON.stringify(book),
+			contentType : "application/json; charset=utf-8",
+            success : function(result) {
+                if(callback)
+                callback(result);
+            }
+		})
+	}
+    return {
+    	bookregister:bookregister,
+    }
+    
+})();

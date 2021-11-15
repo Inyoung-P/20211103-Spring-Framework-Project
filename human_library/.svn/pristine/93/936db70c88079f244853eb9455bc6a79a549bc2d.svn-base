@@ -1,0 +1,8 @@
+package shop.j980108.mapper;
+
+import shop.j980108.domain.BookVo;
+
+public interface BookMapper {
+	//insert
+	void insert(BookVo bookVo); 
+}

@@ -1,0 +1,127 @@
+package shop.j980108.controller;
+
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import shop.j980108.domain.BookVo;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration({"file:src/main/webapp/WEB-INF/spring/root-context.xml",
+	"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml",
+	"file:src/main/webapp/WEB-INF/spring/security-context.xml"})
+@Log4j
+@WebAppConfiguration
+public class BookControllerTests {
+	
+	@Autowired @Setter
+	private WebApplicationContext ctx;
+	private MockMvc mvc;
+	
+	@Before //@Before가 적용된 메서드는 모든 테스트 전에 매번 실행됨
+	public void setup(){
+		//가짜로 url과 파라미터등을 부라우저에서 사용하는것처럼 만들어서 Controller를 실행해볼 수 있음
+		mvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+	}
+	
+	@Test
+	public void testExist(){
+		assertNotNull(ctx);
+		assertNotNull(mvc);
+		log.info(ctx);
+		log.info(mvc);
+	}
+	
+	//책 등록
+	@Test
+	public void testCreate() throws Exception{
+		BookVo vo=new BookVo();
+		ModelAndView mav =mvc.perform(
+				//post 방식으로 데이터 전달 
+				MockMvcRequestBuilders.post("/book/register")
+				.param("isbn", "1232131e 3212d222")
+				.param("title", "컨트롤러테스트  제목1")
+				.param("authors", "컨트롤러테스트  저자1")
+				.param("contents", "컨트롤러테스트  내용1")
+				.param("datetime", "2021-11-02 18:15:34")
+				.param("price", "12222")
+				.param("publisher", "컨트롤러테스트  출판사1")
+				.param("thumbnail", "컨트롤러테스트  표지1")
+				.param("Translators", "컨트롤러 번역자1"))
+			.andReturn()
+			.getModelAndView();
+	}
+	
+/*	@Test
+	public void testCreate() throws Exception {
+		BookVo bookVo=new BookVo();
+		bookVo.setIsbn("23123 1s22d3142ff");
+		bookVo.setTitle("컨트롤러 테스트 제목");
+		bookVo.setAuthors("컨트롤러 테스트 제목");
+		bookVo.setContents("컨트롤러 테스트 내용");
+		//bookVo.setDatetime("0");
+		bookVo.setPrice(20000L);
+		bookVo.setPublisher("컨트롤러 테스트 출판사");
+		bookVo.setThumbnail("컨트롤러 테스트 표지");
+		bookVo.setTranslators("컨트롤러 테스트 번역자");
+		String jsonStr = new Gson().toJson(bookVo);
+		
+		log.info("jsonStr ::"+ jsonStr);
+		
+		 mvc.perform(post("/book/register")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(jsonStr))
+				.andExpect(status().is(200));
+		}*/
+	
+	//페이지번호에 따른 게시글 목록 출력
+	@Test
+	public void testList() throws Exception{
+		ModelMap map =mvc.perform(MockMvcRequestBuilders.get("/book/selectbook")
+				.param("pageNum", "2")
+				.param("amount", "10")
+				)
+		.andReturn()
+		.getModelAndView()
+		.getModelMap();
+		
+		//BoardController의 getList()에서 반환된 결과를 이용해서 Model에 어떤 데이터들이 담겨있는지 확인
+		List<?> list= (List<?>)map.get("list");
+		list.forEach(log::info);
+	}
+	//게시글 상세보기
+	@Test
+	public void testGet() throws Exception{
+		ModelMap map =mvc.perform(MockMvcRequestBuilders.get("/book/detailbook").param("bno","5"))
+		.andReturn()
+		.getModelAndView()
+		.getModelMap();
+		log.info(map.get("book"));
+	}
+		
+	
+	
+	
+	
+}

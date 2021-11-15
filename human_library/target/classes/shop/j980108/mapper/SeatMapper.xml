@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="shop.j980108.mapper.SeatMapper">
+ 
+ 	<!-- ******************************** 좌석 예약 ******************************** -->
+ 	<!-- @author 조윤정 @date 2021-10-25 ~ @name 좌석 Mapper XML 파일     -->
+     <sql id="seatFilter">
+		 	<if test="loc!=null">
+		 		AND LOC=#{loc}
+		 	</if>	  
+		 	<if test="seatNo!=null">
+	     		AND SEATNO=#{seatNo}
+		 	</if>   	
+		 	<if test="revTime!=null">
+	     		AND REVTIME=#{revTime}
+		 	</if>   	
+      </sql>
+ 	<!-- 고른 시간대에 좌석들 가져오기 0 예약가능 1 이미 예약됌 -->
+ 	<select id="getList" resultType="seat">
+		SELECT SEATNO,REVTIME,LOC,COORDX,COORDY,
+		CASE
+			WHEN TBL_SEAT.STATUS=1 THEN 1
+			ELSE NVL(B.REVC,0)
+		END STATUS
+		FROM TBL_SEAT
+		CROSS JOIN
+			(SELECT ROWNUM REVTIME FROM DICT WHERE ROWNUM&lt;=12) A
+		LEFT JOIN
+			(SELECT SEATNO,REVTIME,LOC,count(*) REVC
+			FROM TBL_RESERVATION
+			WHERE TO_CHAR(REVDATE,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')
+			GROUP BY SEATNO,REVTIME,LOC) B
+		USING(SEATNO,REVTIME,LOC)
+		WHERE SEATNO>0
+		<include refid="seatFilter" />
+		ORDER BY 1,2,3
+ 	</select>
+ 	
+ 	<!-- 현재 시간을 시간대로 변경 -->
+ 	<select id="returnTime" resultType="int">
+	 	SELECT
+		CASE
+			WHEN TO_CHAR(SYSDATE,'HH24')&lt; 09 THEN 0
+			WHEN TO_CHAR(SYSDATE,'HH24')=09 THEN 1
+			WHEN TO_CHAR(SYSDATE,'HH24')=10 THEN 2
+			WHEN TO_CHAR(SYSDATE,'HH24')=11 THEN 3
+			WHEN TO_CHAR(SYSDATE,'HH24')=12 THEN 4
+			WHEN TO_CHAR(SYSDATE,'HH24')=13 THEN 5
+			WHEN TO_CHAR(SYSDATE,'HH24')=14 THEN 6
+			WHEN TO_CHAR(SYSDATE,'HH24')=15 THEN 7
+			WHEN TO_CHAR(SYSDATE,'HH24')=16 THEN 8
+			WHEN TO_CHAR(SYSDATE,'HH24')=17 THEN 9
+			WHEN TO_CHAR(SYSDATE,'HH24')=18 THEN 10
+			WHEN TO_CHAR(SYSDATE,'HH24')=19 THEN 11
+			WHEN TO_CHAR(SYSDATE,'HH24')=20 THEN 12
+			WHEN TO_CHAR(SYSDATE,'HH24')&gt;20 THEN 13
+		END TIME
+		FROM DUAL
+ 	</select>
+ 	<update id="update">
+	 	UPDATE TBL_SEAT
+		SET STATUS=#{status}
+		WHERE SEATNO=#{seatNo}
+		AND LOC=#{loc}
+ 	</update>
+ 	<select id="getSeatCntByLoc" resultType="int">
+ 		SELECT COUNT(*)
+		FROM TBL_RESERVATION
+		WHERE TO_CHAR(REVDATE,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')
+		AND REVTIME=#{revTime}
+		AND LOC=#{loc}
+ 	</select>
+
+ </mapper>

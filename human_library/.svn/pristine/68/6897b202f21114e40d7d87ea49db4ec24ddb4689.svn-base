@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="shop.j980108.mapper.PossessionMapper">
+
+	<!-- 도서번호(bkno)로 소장 도서(possession) 조회
+		 @author 박인영 @date 2021-10-19             -->
+  	<select id="getPossession" resultType="possession">
+ 		SELECT BKNO, TITLE, AUTHORS, TRANSLATORS, PUBLISHER, TO_CHAR(DATETIME, 'YYYY.MM.DD') AS DATETIME, THUMBNAIL, CONTENTS, PRICE, STATUS, ISBN
+		FROM TBL_POSSESSION JOIN TBL_BOOK USING(ISBN) WHERE BKNO = #{bkno}
+ 	</select>
+ 	
+ 	<!-- 소장 도서의 상태(Possession.status) 상태 변경
+ 		 @author 박인영 @date 2021-11-01               -->
+ 	<update id="updatePossessionStatus">
+ 		UPDATE TBL_POSSESSION SET STATUS = #{status} WHERE BKNO = #{bkno}
+ 	</update>
+ 	
+	<!-- index 최근 7일 대출 인기 소장 도서 6권 리스트
+ 		 @author 박인영 @date 2021-11-03               -->
+	<select id="listPopularityPossession" resultType="possession">
+		SELECT J.BKNO BKNO, B.TITLE TITLE, B.THUMBNAIL THUMBNAIL FROM TBL_POSSESSION P
+		JOIN (
+		    SELECT BKNO, COUNT
+		    FROM (SELECT BKNO, COUNT(LNO) COUNT FROM TBL_LOANS WHERE LDATE &gt; SYSDATE-7 GROUP BY BKNO ORDER BY 2 DESC)
+		    WHERE ROWNUM &lt; 7
+		) J ON P.BKNO = J.BKNO
+		JOIN TBL_BOOK B ON P.ISBN = B.ISBN
+		ORDER BY J.COUNT DESC
+	</select>
+	
+	<!-- index 신착 도서(최근 등록된 소장도서) 6권 리스트
+ 		 @author 박인영 @date 2021-11-03               -->
+	<select id="listNewPossession" resultType="possession">
+		SELECT P.BKNO BKNO, B.TITLE TITLE FROM TBL_BOOK B
+		JOIN (
+		    SELECT ISBN, BKNO, REGDATE
+		    FROM (SELECT BKNO, ISBN, REGDATE FROM TBL_POSSESSION ORDER BY REGDATE DESC)
+		    WHERE ROWNUM &lt; 7
+		) P ON B.ISBN = P.ISBN
+		ORDER BY P.REGDATE DESC
+	</select>
+ 	
+ </mapper>

@@ -1,0 +1,42 @@
+package shop.j980108.controller;
+
+
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import shop.j980108.domain.BookVo;
+import shop.j980108.service.BookService;
+
+@Controller
+@Log4j
+@RequestMapping("/book")
+@AllArgsConstructor
+public class BookController {
+	private BookService service;
+	
+	@GetMapping("createbook")
+	public void createbook(){
+		 
+	}
+	
+	@PostMapping("register")
+	@ResponseBody
+	public String register(@RequestBody BookVo bookVo) {
+		log.info(bookVo);
+		service.register(bookVo);
+		return "success";
+	}
+	
+	@GetMapping("selectbook")
+	public void selectbook(){
+		 
+	}
+	
+}

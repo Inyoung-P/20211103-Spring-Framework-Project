@@ -1,0 +1,37 @@
+@CHARSET "UTF-8";
+
+/* terms */
+.terms_form {
+   padding: 50px 350px;
+}
+.terms_h2 {
+   padding: 0 0 0 20px; margin : 0 0 15px; font-size: 17px; color: #222; line-height: 100%;
+}
+.agree {
+   border: 1px solid #e6e6e6;
+   margin-bottom: 40px;
+}
+.agree > div {
+   overflow : auto;
+   height : 176px;
+   padding: 26px 19px;
+   font-size: 13px;
+   color: #555;
+   line-height: 16px;
+}
+.agree > p {
+   background: #f8f8f8;
+   border-top: 1px solid #e6e6e6;
+   font-size: 13px;
+   display: flex;
+    align-items: center;
+    height: 40px;
+    margin: auto;
+} 
+#chk1 {
+   margin-left: 15px;
+
+}
+.chk1_label {
+   padding: 0 0 0 10px;
+}

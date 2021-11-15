@@ -1,0 +1,25 @@
+package shop.j980108.service;
+
+import java.util.Map;
+
+import shop.j980108.domain.MemberVo;
+
+public interface MemberService {
+	void memberJoin(Map<String, Object> member) throws Exception;
+	
+	int memberLogin(MemberVo member) throws Exception;
+
+	MemberVo login(MemberVo member) throws Exception;
+	
+	void authJoin(Map<String, Object> member) throws Exception;
+
+	//int memberDelete(String name) throws Exception;
+	
+	void memberDelete(String id) throws Exception;
+	
+	/** 아이디로 회원 조회
+	 * @author 박인영
+	 * @date 2021-11-02
+	 */
+	MemberVo findMemberByID(String id);
+}

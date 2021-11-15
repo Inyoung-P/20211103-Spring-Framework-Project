@@ -1,0 +1,38 @@
+package shop.j980108.mapper;
+
+
+import java.sql.Date;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import shop.j980108.domain.NAvailableVo;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
+@Log4j
+public class NAvailableMapperTests {
+	@Autowired @Setter
+	   private NAvailableMapper nAvailableMapper;
+	
+	@Test
+	public void testInsert(){
+		NAvailableVo na=new NAvailableVo();
+		na.setLoc(1);
+		na.setNDate("2021-10-28");
+		na.setSeatNo(1);
+		na.setReason("사회적거리두기");
+		nAvailableMapper.insert(na);
+		log.info(na);
+	}
+	
+	@Test
+	public void testGetList(){
+		nAvailableMapper.getList().forEach(log::info);
+	}
+}

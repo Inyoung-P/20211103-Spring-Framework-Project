@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="shop.j980108.mapper.BookMapper">
+  <!-- 어떤걸로 검색할지 T-title C-content W-id -->
+  	  <sql id="cri">
+           <trim prefix="(" suffix=") AND" prefixOverrides="OR">
+             <foreach collection="typeArr" item="type">
+                <trim prefix="OR">
+                   <choose>
+                      <when test="type == 'T'.toString()">
+                         TITLE LIKE '%'||#{keyword}||'%'
+                      </when>
+                      <when test="type == 'C'.toString()">
+                         CONTENT LIKE '%${keyword}%'
+                      </when>
+                      <when test="type == 'A'.toString()">
+                         AUTHORS LIKE '%${keyword}%'
+                      </when>
+                   </choose>
+                </trim>   
+             </foreach>
+             
+          </trim> 
+     </sql>
+    <!--  관리자페이지 도서등록 -->
+  	<insert id="insert">
+		INSERT INTO TBL_BOOK(BNO,ISBN, TITLE,DATETIME, AUTHORS, TRANSLATORS, PUBLISHER, THUMBNAIL, CONTENTS, PRICE)
+		VALUES(SEQ_BOOK.NEXTVAL,#{isbn},#{title},#{datetime},#{authors},#{translators},#{publisher},#{thumbnail},#{contents},#{price})
+  	</insert>
+  	
+  	
+    <select id="getListWithPaging" resultType="book">
+  	SELECT BNO,ISBN, TITLE,DATETIME, AUTHORS, TRANSLATORS, PUBLISHER, THUMBNAIL, CONTENTS, PRICE
+	    FROM
+	    (
+     	SELECT
+          ROWNUM RN, BNO, ISBN, TITLE,DATETIME, AUTHORS, TRANSLATORS, PUBLISHER, THUMBNAIL, CONTENTS, PRICE
+      	FROM 
+          TBL_BOOK
+        WHERE
+         <include refid="cri" />
+          ROWNUM &lt;=#{pageNum} * #{amount}
+          )
+   		WHERE RN>(#{pageNum}-1) * #{amount}
+   		</select>
+   		
+   	<!-- 게시글 상세보기 -->
+  	<select id="read" resultType="book">
+  		SELECT * FROM TBL_BOOK WHERE BNO = #{bno}
+  	</select>
+  	
+   		<!-- 검색한 키워드 게시글 갯수 -->
+  	<select id="getTotalCount" resultType="int">
+  		SELECT COUNT(*) FROM TBL_BOOK WHERE 
+	<include refid="cri"/>
+		BNO >0
+  	</select>
+  	  	<!-- 댓글 개수 -->
+  	<update id="updateReviewCnt">
+  		UPDATE TBL_BOOK SET
+  		REVIEWCNT = REVIEWCNT + #{amount}
+  		WHERE BNO=#{bno}
+  	</update>
+	</mapper>

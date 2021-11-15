@@ -1,0 +1,101 @@
+/**
+ * @author 박인영
+ * @date 2021-10-29 ~ 
+ * @name 대출 관련 기능
+ */
+var loansService = (function() { 
+	
+	/** 대출 예약 by Member */
+	function reserveLoans(loans, callback) {
+		$.ajax({
+		    type : "post",
+			url : "/loans/reserveLoans",
+			data : JSON.stringify(loans),
+			contentType : "application/json; charset=utf-8",
+            success : function(result) {
+                if(callback)
+                callback(result);
+            }
+		})		
+	}
+	
+	/** 대출 예약 확정 by Manager */
+	function acceptLoans(loans, callback) {
+		$.ajax({
+		    type : "post",
+			url : "/loans/acceptLoans",
+			data : JSON.stringify(loans),
+			contentType : "application/json; charset=utf-8",
+            success : function(result) {
+                if(callback)
+                callback(result);
+            }
+		})		
+	}
+	 
+	/** 대출 예약 취소 by Manager */
+	function cancelLoansReservationByManager(loans, callback) {
+		$.ajax({
+		    type : "post",
+			url : "/loans/cancelLoansReservationByManager",
+			data : JSON.stringify(loans),
+			contentType : "application/json; charset=utf-8",
+            success : function(result) {
+                if(callback)
+                callback(result);
+            }
+		})		
+	}	
+	
+	/** 대출 완료 by manager */
+	function completeLoans(loans, callback) {
+		$.ajax({
+		    type : "post",
+			url : "/loans/completeLoans",
+			data : JSON.stringify(loans),
+			contentType : "application/json; charset=utf-8",
+            success : function(result) {
+                if(callback)
+                callback(result);
+            }
+		})
+	}
+
+	/** 도서 반납 by Manager */
+	function returnLoans(loans, callback) {
+		$.ajax({
+		    type : "post",
+			url : "/loans/returnLoans",
+			data : JSON.stringify(loans),
+			contentType : "application/json; charset=utf-8",
+            success : function(result) {
+                if(callback)
+                callback(result);
+            }
+		})
+	}
+	
+	/** 도서 영구미반납 by Manager */
+	function notReturnLoans(loans, callback) {
+		$.ajax({
+		    type : "post",
+			url : "/loans/notReturnLoans",
+			data : JSON.stringify(loans),
+			contentType : "application/json; charset=utf-8",
+            success : function(result) {
+                if(callback)
+                callback(result);
+            }
+		})
+	}	
+
+    return {
+    	reserveLoans:reserveLoans,
+    	acceptLoans:acceptLoans,
+    	cancelLoansReservationByManager:cancelLoansReservationByManager,
+    	completeLoans:completeLoans,
+    	returnLoans:returnLoans,
+    	notReturnLoans:notReturnLoans
+    }
+    
+})();

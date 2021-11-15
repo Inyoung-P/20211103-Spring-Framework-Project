@@ -1,0 +1,34 @@
+package shop.j980108.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import lombok.AllArgsConstructor;
+import shop.j980108.domain.PossessionVo;
+import shop.j980108.mapper.PossessionMapper;
+
+/**
+ * @author 박인영
+ * @date 2021-11-01 ~ 
+ * @name 소장도서 ServiceImpl
+ */
+@Service
+@AllArgsConstructor
+public class PossessionServiceImpl implements PossessionService {
+	
+	private PossessionMapper mapper;
+	
+	/** 도서번호(bkno)로 소장 도서 정보(possession) 조회 */
+	@Override
+	public PossessionVo getPossession(Long bkno) {
+		return mapper.getPossession(bkno);
+	}
+	
+	/** 최근 7일 대출 인기 소장 도서 */
+	@Override
+	public List<PossessionVo> listPopularityPossession() {
+		return mapper.listPopularityPossession();
+	}
+	
+}
