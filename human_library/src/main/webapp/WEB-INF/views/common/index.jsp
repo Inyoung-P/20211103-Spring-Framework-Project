@@ -170,7 +170,7 @@
 	                            <li class="list-group-item clearfix p-1 border-0 border-bottom border-light">
 	                                <a class="text-decoration-none text-black" href="${pageContext.request.contextPath}/board/get?bno=${marcket.bno}"><c:out value="${marcket.title}" /></a>
 	                                <span class="text-dark small">&nbsp;&nbsp;[${marcket.replyCnt}]</span>
-	                                <span class="float-right"><fmt:formatDate value="${marcket.regDate}" pattern="yy-MM-dd" /></td></span>
+	                                <span class="float-right"><fmt:formatDate value="${marcket.regDate}" pattern="yy-MM-dd" /></span>
 	                            </li>
                         	</c:forEach>
                         </ul>
